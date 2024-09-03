@@ -20,7 +20,7 @@ public class CustomerController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerRequest customer)
     {
-        var customerResponse = await _createCustomerUseCase.CreateCustomer(customer);
+        var customerResponse = await _createCustomerUseCase.CreateCustomerAsync(customer);
         var response = Response<CreateCustomerResponse>.Success(customerResponse);
         return Ok(response);
     }

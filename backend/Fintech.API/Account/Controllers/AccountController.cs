@@ -20,7 +20,7 @@ public class AccountController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateAccount([FromBody] CreateAccountRequest account)
     {
-        var accountResponse = await _createAccountUseCase.CreateAccount(account);
+        var accountResponse = await _createAccountUseCase.CreateAccountAsync(account);
         var response = Response<CreateAccountResponse>.Success(accountResponse);
         return Ok(response);
     }

@@ -24,7 +24,7 @@ public class TransactionUseCase : ITransactionUseCase
         return account;
     }
     
-    public async Task<decimal> Deposit(TransactionRequest transactionRequest)
+    public async Task<decimal> DepositAsync(TransactionRequest transactionRequest)
     {
         var account = await CreateTransaction(transactionRequest, "Deposit");
         var newBalance = account.Balance + transactionRequest.Amount;
@@ -32,7 +32,7 @@ public class TransactionUseCase : ITransactionUseCase
         return newBalance;
     }
 
-    public async Task<decimal> Withdraw(TransactionRequest transactionRequest)
+    public async Task<decimal> WithdrawAsync(TransactionRequest transactionRequest)
     {
         var account = await CreateTransaction(transactionRequest, "Withdraw");
         var newBalance = account.Balance - transactionRequest.Amount;
