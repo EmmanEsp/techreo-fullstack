@@ -12,7 +12,7 @@ public class CustomerService : ICustomerService
         _context = context;        
     }
 
-    public async Task<Guid> CreateCustomer(CustomerModel customer)
+    public async Task<Guid> CreateCustomerAsync(CustomerModel customer)
     {
         await _context.Customers.InsertOneAsync(customer);
         return customer.Id;

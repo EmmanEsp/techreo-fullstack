@@ -14,7 +14,7 @@ class AccountService : IAccountService
         _context = context;        
     }
 
-    public async Task CreateAccount(AccountModel account)
+    public async Task CreateAccountAsync(AccountModel account)
     {
         await _context.Accounts.InsertOneAsync(account);
     }

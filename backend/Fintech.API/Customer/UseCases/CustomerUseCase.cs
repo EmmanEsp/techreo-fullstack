@@ -11,7 +11,7 @@ class CustomerUseCase : ICustomerUseCase {
         _service = service;
     }
 
-    public async Task<CreateCustomerResponse> CreateCustomer(CreateCustomerRequest customer)
+    public async Task<CreateCustomerResponse> CreateCustomerAsync(CreateCustomerRequest customer)
     {
         var customerModel = new CustomerModel() {
             Name = customer.Name,
@@ -20,7 +20,7 @@ class CustomerUseCase : ICustomerUseCase {
             Phone = customer.Phone,
             Password = customer.Password
         };
-        var customerId = await _service.CreateCustomer(customerModel);
+        var customerId = await _service.CreateCustomerAsync(customerModel);
         return new CreateCustomerResponse() { CustomerId = customerId};
     }
 }

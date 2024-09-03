@@ -20,7 +20,7 @@ public class TransactionController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Deposit([FromBody] TransactionRequest transactionRequest)
     {
-        var newBalance = await _transactionUseCase.Deposit(transactionRequest);
+        var newBalance = await _transactionUseCase.DepositAsync(transactionRequest);
         var response = Response<decimal>.Success(newBalance);
         return Ok(response);
     }
@@ -28,7 +28,7 @@ public class TransactionController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Withdraw([FromBody] TransactionRequest transactionRequest)
     {
-        var newBalance = await _transactionUseCase.Withdraw(transactionRequest);
+        var newBalance = await _transactionUseCase.WithdrawAsync(transactionRequest);
         var response = Response<decimal>.Success(newBalance);
         return Ok(response);
     }
