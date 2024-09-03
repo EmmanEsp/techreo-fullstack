@@ -18,4 +18,5 @@ public class MongoDBContext
     }
     public IMongoCollection<CustomerModel> Customers => _database.GetCollection<CustomerModel>("customers");
     public IMongoCollection<AccountModel> Accounts => _database.GetCollection<AccountModel>("accounts");
+    public IMongoCollection<TransactionModel> Transactions => _database.GetCollection<TransactionModel>("transactions");
 }
