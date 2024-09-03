@@ -21,6 +21,9 @@ builder.Services.AddScoped<ICustomerUseCase, CustomerUseCase>();
 builder.Services.AddScoped<IAccountUseCase, AccountUseCase>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 
+builder.Services.AddScoped<ILoginUseCase, LoginUseCase>();
+builder.Services.AddScoped<ILoginService, LoginService>();
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo

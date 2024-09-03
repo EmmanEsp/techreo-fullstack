@@ -10,17 +10,17 @@ public class CustomerModel
     public Guid Id { get; set; }
 
     [BsonElement("name")]
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
     [BsonElement("lastName")]
-    public string LastName { get; set; }
+    public required string LastName { get; set; }
 
     [BsonElement("email")]
-    public string Email { get; set; }
+    public required string Email { get; set; }
 
     [BsonElement("phone")]
-    public string Phone { get; set; }
+    public required string Phone { get; set; }
 
     [BsonElement("password")]
-    public string Password { get; set; }
+    public required string Password { get; set; }
 }
