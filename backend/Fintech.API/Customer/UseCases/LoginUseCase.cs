@@ -1,0 +1,41 @@
+using Fintech.API.Customer.Domain;
+using Fintech.API.Customer.Services;
+
+namespace Fintech.API.Customer.UseCases;
+
+public class LoginUseCase : ILoginUseCase
+{
+    private readonly ILoginService _loginService;
+
+    public LoginUseCase(ILoginService loginService)
+    {
+        _loginService = loginService;
+    }
+
+    public async Task<LoginResponse> LoginAsync(LoginRequest loginRequest)
+    {
+        var customer = await _loginService.IsEmailInUseAsync(loginRequest.User);
+        customer ??= await _loginService.IsPhoneInUseAsync(loginRequest.User);
+
+        if (customer == null) 
+        {
+            throw new ArgumentException("User not found");
+        }
+        if (customer.Password != loginRequest.Password) 
+        {
+            throw new ArgumentException("Invalid password");
+        }
+        
+        var accountModel = await _loginService.GetAccountByCustomerIdAsync(customer.Id);
+        return new LoginResponse() {
+            CustomerId = customer.Id,
+            Name = customer.Name,
+            LastName = customer.LastName,
+            Email = customer.Email,
+            Phone = customer.Phone,
+            AccountNumber = accountModel.AccountNumber,
+            Balance = accountModel.Balance,
+            Clabe = accountModel.Clabe
+        };
+    }
+}

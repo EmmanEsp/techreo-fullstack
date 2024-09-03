@@ -16,10 +16,10 @@ public class AccountModel
     public Guid CustomerId { get; set; }
 
     [BsonElement("accountNumber")]
-    public string AccountNumber { get; set; }
+    public required string AccountNumber { get; set; }
 
     [BsonElement("clabe")]
-    public string Clabe { get; set; }
+    public required string Clabe { get; set; }
 
     [BsonElement("balance")]
     [BsonRepresentation(BsonType.Decimal128)]
