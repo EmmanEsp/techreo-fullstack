@@ -3,15 +3,15 @@ using Fintech.API.Customer.Services;
 
 namespace Fintech.API.Customer.UseCases;
 
-class CreateCustomerUseCase : ICreateCustomerUseCase {
-    private readonly ICreateCustomerService _service;
+class CustomerUseCase : ICustomerUseCase {
+    private readonly ICustomerService _service;
 
-    public CreateCustomerUseCase(ICreateCustomerService service)
-    {
+    public CustomerUseCase(ICustomerService service)
+    { 
         _service = service;
     }
 
-    public async Task CreateCustomer(CreateCustomerRequest customer)
+    public async Task<CreateCustomerResponse> CreateCustomer(CreateCustomerRequest customer)
     {
         var customerModel = new CustomerModel() {
             Name = customer.Name,
@@ -20,6 +20,7 @@ class CreateCustomerUseCase : ICreateCustomerUseCase {
             Phone = customer.Phone,
             Password = customer.Password
         };
-        await _service.CreateCustomer(customerModel);
+        var customerId = await _service.CreateCustomer(customerModel);
+        return new CreateCustomerResponse() { CustomerId = customerId};
     }
 }

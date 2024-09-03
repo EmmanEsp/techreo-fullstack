@@ -1,17 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
 
+using Fintech.API.Domain;
 using Fintech.API.Customer.UseCases;
 using Fintech.API.Customer.Domain;
 
 namespace Fintech.API.Customer.Controllers;
 
 [ApiController]
-[Route("api/v1/[controller]")]
+[Route("api/v1/customer")]
 public class CustomerController : ControllerBase
 {
-    private readonly ICreateCustomerUseCase _createCustomerUseCase;
+    private readonly ICustomerUseCase _createCustomerUseCase;
 
-    public CustomerController(ICreateCustomerUseCase createCustomerUseCase)
+    public CustomerController(ICustomerUseCase createCustomerUseCase)
     {
         _createCustomerUseCase = createCustomerUseCase;
     }
@@ -19,7 +20,8 @@ public class CustomerController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerRequest customer)
     {
-        await _createCustomerUseCase.CreateCustomer(customer);
-        return Ok();
+        var customerResponse = await _createCustomerUseCase.CreateCustomer(customer);
+        var response = Response<CreateCustomerResponse>.Success(customerResponse);
+        return Ok(response);
     }
 }
