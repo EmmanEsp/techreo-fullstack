@@ -1,7 +1,11 @@
 using Fintech.API.Domain;
 using Fintech.API.Infrastructure;
+
 using Fintech.API.Customer.UseCases;
 using Fintech.API.Customer.Services;
+
+using Fintech.API.Account.UseCases;
+using Fintech.API.Account.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +15,11 @@ builder.Services.AddControllers();
 builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("MongoDB"));
 builder.Services.AddSingleton<MongoDBContext>();
 
-builder.Services.AddScoped<ICreateCustomerService, CreateCustomerService>();
-builder.Services.AddScoped<ICreateCustomerUseCase, CreateCustomerUseCase>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<ICustomerUseCase, CustomerUseCase>();
+
+builder.Services.AddScoped<IAccountUseCase, AccountUseCase>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 builder.Services.AddSwaggerGen(options =>
 {

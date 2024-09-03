@@ -3,17 +3,18 @@ using Fintech.API.Customer.Domain;
 
 namespace Fintech.API.Customer.Services;
 
-public class CreateCustomerService : ICreateCustomerService
+public class CustomerService : ICustomerService
 {
     private readonly MongoDBContext _context;
 
-    public CreateCustomerService(MongoDBContext context)
+    public CustomerService(MongoDBContext context)
     {
         _context = context;        
     }
 
-    public async Task CreateCustomer(CustomerModel customer)
+    public async Task<Guid> CreateCustomer(CustomerModel customer)
     {
         await _context.Customers.InsertOneAsync(customer);
+        return customer.Id;
     }
 }
