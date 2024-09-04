@@ -28,16 +28,16 @@ public class TransactionController : ControllerBase
     [HttpPost("deposit")]
     public async Task<IActionResult> Deposit([FromBody] TransactionRequest transactionRequest)
     {
-        var newBalance = await _transactionUseCase.DepositAsync(transactionRequest);
-        var response = Response<UpdatedBalanceResponse>.Success(newBalance);
+        var transaction = await _transactionUseCase.DepositAsync(transactionRequest);
+        var response = Response<TransactionResponse>.Success(transaction);
         return Ok(response);
     }
 
     [HttpPost("withdraw")]
     public async Task<IActionResult> Withdraw([FromBody] TransactionRequest transactionRequest)
     {
-        var newBalance = await _transactionUseCase.WithdrawAsync(transactionRequest);
-        var response = Response<UpdatedBalanceResponse>.Success(newBalance);
+        var transaction = await _transactionUseCase.WithdrawAsync(transactionRequest);
+        var response = Response<TransactionResponse>.Success(transaction);
         return Ok(response);
     }
 }

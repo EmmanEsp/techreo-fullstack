@@ -5,14 +5,12 @@ using Fintech.API.Account.Services;
 
 namespace Fintech.API.Account.UseCases;
 
-public class TransactionUseCase : ITransactionUseCase
+public class TransactionUseCase(ITransactionService transactionService) : ITransactionUseCase
 {
-    private readonly ITransactionService _transactionService;
-    public TransactionUseCase(ITransactionService transactionService)
-    {
-        _transactionService = transactionService;
-    }
-    
+    private readonly string DEPOSIT = "Deposit";
+    private readonly string WITHDRAW = "Withdraw";
+    private readonly ITransactionService _transactionService = transactionService;
+
     public TransactionResponse MapToTransactionResponse(TransactionModel transaction)
     {
         return new TransactionResponse
@@ -32,29 +30,41 @@ public class TransactionUseCase : ITransactionUseCase
     private async Task<AccountModel> CreateTransaction(TransactionRequest transactionRequest, string type)
     {
         var account = await _transactionService.GetAccountByCustomerIdAsync(transactionRequest.CustomerId);
+        var date = DateTime.Now;
+        account.UpdatedAt = date;
+
         var transactionModel = new TransactionModel() {
             CustomerId = transactionRequest.CustomerId,
             AccountId = account.Id,
             Type = type,
-            Amount = transactionRequest.Amount
+            Amount = transactionRequest.Amount,
+            CreatedAt = date
         };
         await _transactionService.CreateTransactionAsync(transactionModel);
         return account;
     }
     
-    public async Task<UpdatedBalanceResponse> DepositAsync(TransactionRequest transactionRequest)
+    public async Task<TransactionResponse> DepositAsync(TransactionRequest transactionRequest)
     {
-        var account = await CreateTransaction(transactionRequest, "Deposit");
-        var newBalance = account.Balance + transactionRequest.Amount;
-        await _transactionService.UpdateBalanceAsync(account.Id, newBalance);
-        return new UpdatedBalanceResponse() { Amount = newBalance };
+        var account = await CreateTransaction(transactionRequest, DEPOSIT);
+        account.Balance += transactionRequest.Amount;
+        await _transactionService.UpdateAccountBalanceAsync(account);
+        return new TransactionResponse() { 
+            Type = DEPOSIT, 
+            Amount = account.Balance, 
+            CreatedAt = account.UpdatedAt
+        };
     }
 
-    public async Task<UpdatedBalanceResponse> WithdrawAsync(TransactionRequest transactionRequest)
+    public async Task<TransactionResponse> WithdrawAsync(TransactionRequest transactionRequest)
     {
-        var account = await CreateTransaction(transactionRequest, "Withdraw");
-        var newBalance = account.Balance - transactionRequest.Amount;
-        await _transactionService.UpdateBalanceAsync(account.Id, newBalance);
-        return new UpdatedBalanceResponse() { Amount = newBalance };
+        var account = await CreateTransaction(transactionRequest, WITHDRAW);
+        account.Balance -= transactionRequest.Amount;
+        await _transactionService.UpdateAccountBalanceAsync(account);
+        return new TransactionResponse() { 
+            Type = WITHDRAW,
+            Amount = account.Balance, 
+            CreatedAt = account.UpdatedAt
+        };
     }
 }

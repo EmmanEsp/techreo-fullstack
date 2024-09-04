@@ -24,4 +24,12 @@ public class AccountModel
     [BsonElement("balance")]
     [BsonRepresentation(BsonType.Decimal128)]
     public decimal Balance { get; set; }
+
+    [BsonElement("createdAt")]
+    [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+    public DateTime CreatedAt { get; set; }
+
+    [BsonElement("updatedAt")]
+    [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+    public DateTime UpdatedAt { get; set; }
 }
