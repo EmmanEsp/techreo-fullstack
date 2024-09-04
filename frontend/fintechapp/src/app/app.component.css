@@ -16,3 +16,29 @@ mat-form-field {
     max-width: 400px;
     margin: 20px auto;
 }
+
+.transactions-card {
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.transaction-item {
+    margin-bottom: 10px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.centered-button {
+    display: flex;
+    justify-content: center; /* Horizontally centers the button */
+    align-items: center;     /* Vertically centers the button */
+    height: 70px;           /* Adjust height to position the button */
+}
+
+.info-title {
+    margin-bottom: 20px;
+}

@@ -1,4 +1,4 @@
-<form [formGroup]="registrationForm" (ngSubmit)="onSubmitRegistration()">
+<form *ngIf="showRegistrationForm" [formGroup]="registrationForm" (ngSubmit)="onSubmitRegistration()">
     <h4>Registro</h4>
     <mat-form-field>
         <mat-label for="name">Nombre(s)</mat-label>
@@ -21,10 +21,13 @@
         <input id="register-password" formControlName="password" matInput type="password" ngModel>
     </mat-form-field>
     
-    <button mat-raised-button color="primary" type="submit">Registar</button>
+    <div class="button-container">
+        <button mat-raised-button color="primary" type="submit">Registar</button>
+        <button mat-raised-button color="accent" (click)="toggleLoginRegistration()">Cancelar</button>
+    </div>
 </form>
 
-<form [formGroup]="signinForm" (ngSubmit)="onSubmitSignin()">
+<form *ngIf="showSigninForm" [formGroup]="signinForm" (ngSubmit)="onSubmitSignin()">
     <h4>Inico de sesión</h4>
     <mat-form-field>
         <mat-label for="user">Email o Celular</mat-label>
@@ -34,37 +37,61 @@
         <mat-label for="password">Password</mat-label>
         <input id="signing-password" formControlName="password" matInput type="password" ngModel>
     </mat-form-field>
-
-    <button mat-raised-button color="primary" type="submit">Login</button>
+    <div class="button-container">
+        <button mat-raised-button color="primary" type="submit">Login</button>
+        <button mat-raised-button color="accent" (click)="toggleLoginRegistration()">Crear cuenta</button>
+    </div>
 </form>
 
-<mat-card *ngIf="customer" class="signin-response-card">
-    <mat-card-header>
-        <mat-card-title>{{ customer.name }} {{ customer.lastName }}</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-        <p><strong>Email:</strong> {{ customer.email }}</p>
-        <p><strong>Celular:</strong> {{ customer.phone }}</p>
-        <p><strong>Numero de Cuenta:</strong> {{ customer.accountNumber }}</p>
-        <p><strong>CLABE:</strong> {{ customer.clabe }}</p>
-        <p><strong>Balance:</strong> {{ customer.balance | currency }}</p>
-    </mat-card-content>
-</mat-card>
+<div *ngIf="showMainContent">
+    <mat-card *ngIf="customer" class="signin-response-card">
+        <mat-card-header class="info-title">
+            <mat-card-title>Bienvenido {{ customer.name }} {{ customer.lastName }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <p><strong>Email:</strong> {{ customer.email }}</p>
+            <p><strong>Celular:</strong> {{ customer.phone }}</p>
+            <p><strong>Numero de Cuenta:</strong> {{ customer.accountNumber }}</p>
+            <p><strong>CLABE:</strong> {{ customer.clabe }}</p>
+            <p><strong>Balance:</strong> {{ customer.balance | currency }}</p>
+        </mat-card-content>
+        <mat-card-actions class="centered-button">
+            <button mat-raised-button color="warn" (click)="logout()">Cerrar Sesión</button>
+        </mat-card-actions>
+    </mat-card>
 
-<form [formGroup]="depositForm" (ngSubmit)="onSubmitDeposit()">
-    <h4>Deposito</h4>
-    <mat-form-field>
-        <mat-label for="amount">Cantidad</mat-label>
-        <input id="deposit-amount" type="text" formControlName="amount" matInput placeholder="$100.00">
-    </mat-form-field>
-    <button mat-raised-button color="primary" type="submit">Depositar</button>
-</form>
+    <form [formGroup]="depositForm" (ngSubmit)="onSubmitDeposit()">
+        <h4>Deposito</h4>
+        <mat-form-field>
+            <mat-label for="amount">Cantidad</mat-label>
+            <input id="deposit-amount" type="text" formControlName="amount" matInput placeholder="$100.00">
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit">Depositar</button>
+    </form>
 
-<form [formGroup]="withdrawForm" (ngSubmit)="onSubmitWithdraw()">
-    <h4>Retiro</h4>
-    <mat-form-field>
-        <mat-label for="amount">Cantidad</mat-label>
-        <input id="withdraw-amount" type="text" formControlName="amount" matInput placeholder="$100.00">
-    </mat-form-field>
-    <button mat-raised-button color="primary" type="submit">Retirar</button>
-</form>
+    <form [formGroup]="withdrawForm" (ngSubmit)="onSubmitWithdraw()">
+        <h4>Retiro</h4>
+        <mat-form-field>
+            <mat-label for="amount">Cantidad</mat-label>
+            <input id="withdraw-amount" type="text" formControlName="amount" matInput placeholder="$100.00">
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit">Retirar</button>
+    </form>
+
+    <mat-card *ngIf="transactions.length > 0" class="transactions-card">
+        <mat-card-header>
+            <mat-card-title>Transactions</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div *ngFor="let transaction of transactions" class="transaction-item">
+                <mat-card>
+                    <mat-card-content>
+                        <p><strong>Tipo:</strong> {{ transaction.type }}</p>
+                        <p><strong>Cantidad:</strong> {{ transaction.amount | currency }}</p>
+                        <p><strong>Fecha:</strong> {{ transaction.createdAt | date: 'dd/MM/yy HH:mm' }}</p>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

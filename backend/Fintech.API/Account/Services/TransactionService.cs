@@ -31,4 +31,9 @@ public class TransactionService : ITransactionService
     {
         await _context.Transactions.InsertOneAsync(transactionModel);
     }
+
+    public async Task<List<TransactionModel>> GetAllTransactionByCustomerId(Guid customerId)
+    {
+        return await _context.Transactions.Find(a => a.CustomerId == customerId).ToListAsync();
+    }
 }

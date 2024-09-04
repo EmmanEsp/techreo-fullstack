@@ -13,7 +13,23 @@ public class TransactionUseCase : ITransactionUseCase
         _transactionService = transactionService;
     }
     
-    private async Task<AccountModel> CreateTransaction(TransactionRequest transactionRequest, string type) 
+    public TransactionResponse MapToTransactionResponse(TransactionModel transaction)
+    {
+        return new TransactionResponse
+        {
+            Type = transaction.Type,
+            Amount = transaction.Amount,
+            CreatedAt = transaction.CreatedAt
+        };
+    }
+
+    public async Task<List<TransactionResponse>> GetAllTransactionByCustomerId(Guid customerId)
+    {
+        var transactions = await _transactionService.GetAllTransactionByCustomerId(customerId);
+        return transactions.Select(MapToTransactionResponse).ToList();
+    }
+    
+    private async Task<AccountModel> CreateTransaction(TransactionRequest transactionRequest, string type)
     {
         var account = await _transactionService.GetAccountByCustomerIdAsync(transactionRequest.CustomerId);
         var transactionModel = new TransactionModel() {
