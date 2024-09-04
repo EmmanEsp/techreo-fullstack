@@ -6,4 +6,5 @@ public interface ITransactionService {
     Task CreateTransactionAsync(TransactionModel transactionModel);
     Task<AccountModel> GetAccountByCustomerIdAsync(Guid customerId);
     Task UpdateBalanceAsync(Guid accountId, decimal amount);
+    Task<List<TransactionModel>> GetAllTransactionByCustomerId(Guid customerId);
 }

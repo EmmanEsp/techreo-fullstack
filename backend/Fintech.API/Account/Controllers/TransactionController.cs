@@ -17,6 +17,14 @@ public class TransactionController : ControllerBase
         _transactionUseCase = transactionUseCase;
     }
 
+    [HttpGet("customer/{customerId}")]
+    public async Task<IActionResult> GetAllTransaction([FromRoute] Guid customerId)
+    {
+        var transactions = await _transactionUseCase.GetAllTransactionByCustomerId(customerId);
+        var response = Response<List<TransactionResponse>>.Success(transactions);
+        return Ok(response);
+    }
+
     [HttpPost("deposit")]
     public async Task<IActionResult> Deposit([FromBody] TransactionRequest transactionRequest)
     {

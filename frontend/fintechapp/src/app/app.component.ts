@@ -34,6 +34,12 @@ interface BalanceResponse {
   amount: number
 }
 
+interface TransactionResponse {
+  type: string;
+  amount: number;
+  createdAt: string; // ISO 8601 date format
+}
+
 interface ServiceResponse<T> {
   status: string;
   data: T;
@@ -50,6 +56,11 @@ export class AppComponent {
   title = 'fintechapp';
   
   customer: SigninResponse | undefined;
+  transactions: TransactionResponse[] = [];
+
+  showSigninForm: boolean = true;
+  showRegistrationForm: boolean = false;
+  showMainContent: boolean = false;
 
   constructor(private http: HttpClient) { }
 
@@ -69,6 +80,7 @@ export class AppComponent {
   depositForm = new FormGroup({
     amount: new FormControl('')
   });
+  
   withdrawForm  = new FormGroup({
     amount: new FormControl('')
   });
@@ -81,18 +93,45 @@ export class AppComponent {
     });
   }
 
+  getAllTransaction(customerId: string) {
+    this.http.get<ServiceResponse<TransactionResponse[]>>(`http://localhost:5284/api/v1/transaction/customer/${customerId}`).subscribe({
+      next: (response) => this.transactions = response.data,
+      error: (error) => console.error('Error:', error)
+    });
+  }
+
   onSubmitRegistration() {
     this.http.post<ServiceResponse<CreateCustomerResponse>>('http://localhost:5284/api/v1/customer', this.registrationForm.value).subscribe({
-      next: (response) => this.createAccount(response.data.customerId),
+      next: (response) => {
+        this.createAccount(response.data.customerId);
+        this.showRegistrationForm = false;
+        this.showSigninForm = true;
+      },
       error: (error) => console.error('Error:', error)
     });
   }
 
   onSubmitSignin() {
     this.http.post<ServiceResponse<SigninResponse>>('http://localhost:5284/api/v1/signin', this.signinForm.value).subscribe({
-      next: (response) =>  this.customer = response.data,
+      next: (response) => {
+        this.customer = response.data;
+        this.getAllTransaction(response.data.customerId);
+        this.showSigninForm = false;
+        this.showMainContent = true; 
+      },
       error: (error) => console.error('Error:', error)
     });
+  }
+
+  toggleLoginRegistration() {
+    this.showSigninForm = !this.showSigninForm;
+    this.showRegistrationForm = !this.showRegistrationForm;
+  }
+  
+  logout() {
+    this.showSigninForm = true;
+    this.showMainContent = false;
+    this.customer = undefined; // Reset customer information
   }
 
   onSubmitDeposit() {
@@ -125,7 +164,6 @@ export class AppComponent {
       ...this.withdrawForm.value,
       customerId: this.customer.customerId
     };
-    console.log(body)
     this.http.post<ServiceResponse<BalanceResponse>>('http://localhost:5284/api/v1/transaction/withdraw', body).subscribe({
       next: (response) => {
         if (!this.customer) {
