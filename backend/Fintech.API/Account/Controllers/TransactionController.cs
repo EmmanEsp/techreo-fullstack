@@ -17,19 +17,19 @@ public class TransactionController : ControllerBase
         _transactionUseCase = transactionUseCase;
     }
 
-    [HttpPost]
+    [HttpPost("deposit")]
     public async Task<IActionResult> Deposit([FromBody] TransactionRequest transactionRequest)
     {
         var newBalance = await _transactionUseCase.DepositAsync(transactionRequest);
-        var response = Response<decimal>.Success(newBalance);
+        var response = Response<UpdatedBalanceResponse>.Success(newBalance);
         return Ok(response);
     }
 
-    [HttpPost]
+    [HttpPost("withdraw")]
     public async Task<IActionResult> Withdraw([FromBody] TransactionRequest transactionRequest)
     {
         var newBalance = await _transactionUseCase.WithdrawAsync(transactionRequest);
-        var response = Response<decimal>.Success(newBalance);
+        var response = Response<UpdatedBalanceResponse>.Success(newBalance);
         return Ok(response);
     }
 }

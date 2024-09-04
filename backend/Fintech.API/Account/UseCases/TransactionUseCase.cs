@@ -1,3 +1,5 @@
+using System;
+
 using Fintech.API.Account.Domain;
 using Fintech.API.Account.Services;
 
@@ -24,19 +26,19 @@ public class TransactionUseCase : ITransactionUseCase
         return account;
     }
     
-    public async Task<decimal> DepositAsync(TransactionRequest transactionRequest)
+    public async Task<UpdatedBalanceResponse> DepositAsync(TransactionRequest transactionRequest)
     {
         var account = await CreateTransaction(transactionRequest, "Deposit");
         var newBalance = account.Balance + transactionRequest.Amount;
         await _transactionService.UpdateBalanceAsync(account.Id, newBalance);
-        return newBalance;
+        return new UpdatedBalanceResponse() { Amount = newBalance };
     }
 
-    public async Task<decimal> WithdrawAsync(TransactionRequest transactionRequest)
+    public async Task<UpdatedBalanceResponse> WithdrawAsync(TransactionRequest transactionRequest)
     {
         var account = await CreateTransaction(transactionRequest, "Withdraw");
         var newBalance = account.Balance - transactionRequest.Amount;
-        await _transactionService.UpdateBalanceAsync(account.CustomerId, newBalance);
-        return newBalance;
+        await _transactionService.UpdateBalanceAsync(account.Id, newBalance);
+        return new UpdatedBalanceResponse() { Amount = newBalance };
     }
 }

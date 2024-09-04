@@ -23,7 +23,5 @@ public class AccountModel
 
     [BsonElement("balance")]
     [BsonRepresentation(BsonType.Decimal128)]
-    [Range(0, 9999999999999999.99)]
-    [RegularExpression(@"\d+(\.\d{1,2})?", ErrorMessage = "Balance can have at most two decimal places.")]
     public decimal Balance { get; set; }
 }
