@@ -1,3 +1,5 @@
+using BCrypt;
+
 using Fintech.API.Customer.Domain;
 using Fintech.API.Customer.Services;
 
@@ -11,6 +13,11 @@ class CustomerUseCase : ICustomerUseCase {
         _service = service;
     }
 
+    private string HashPassword(string password) 
+    {
+        return BCrypt.Net.BCrypt.HashPassword(password);
+    }
+
     public async Task<CreateCustomerResponse> CreateCustomerAsync(CreateCustomerRequest customer)
     {
         var customerModel = new CustomerModel() {
@@ -18,7 +25,7 @@ class CustomerUseCase : ICustomerUseCase {
             LastName = customer.LastName,
             Email = customer.Email,
             Phone = customer.Phone,
-            Password = customer.Password
+            Password = HashPassword(customer.Password)
         };
         var customerId = await _service.CreateCustomerAsync(customerModel);
         return new CreateCustomerResponse() { CustomerId = customerId};
