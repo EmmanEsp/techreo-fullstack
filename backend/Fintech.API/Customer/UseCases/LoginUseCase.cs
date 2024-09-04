@@ -1,3 +1,5 @@
+using BCrypt;
+
 using Fintech.API.Customer.Domain;
 using Fintech.API.Customer.Services;
 
@@ -12,16 +14,16 @@ public class LoginUseCase : ILoginUseCase
         _loginService = loginService;
     }
 
+    public bool VerifyPassword(string password, string hashedPassword) {
+        return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
+    }
+
     public async Task<LoginResponse> LoginAsync(LoginRequest loginRequest)
     {
         var customer = await _loginService.IsEmailInUseAsync(loginRequest.User);
         customer ??= await _loginService.IsPhoneInUseAsync(loginRequest.User);
 
-        if (customer == null) 
-        {
-            throw new ArgumentException("User not found");
-        }
-        if (customer.Password != loginRequest.Password) 
+        if (!VerifyPassword(loginRequest.Password, customer.Password)) 
         {
             throw new ArgumentException("Invalid password");
         }
