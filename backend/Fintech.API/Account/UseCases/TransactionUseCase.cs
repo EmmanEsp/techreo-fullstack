@@ -51,7 +51,7 @@ public class TransactionUseCase(ITransactionService transactionService) : ITrans
         await _transactionService.UpdateAccountBalanceAsync(account);
         return new TransactionResponse() { 
             Type = DEPOSIT, 
-            Amount = account.Balance, 
+            Amount = transactionRequest.Amount, 
             CreatedAt = account.UpdatedAt
         };
     }
@@ -63,7 +63,7 @@ public class TransactionUseCase(ITransactionService transactionService) : ITrans
         await _transactionService.UpdateAccountBalanceAsync(account);
         return new TransactionResponse() { 
             Type = WITHDRAW,
-            Amount = account.Balance, 
+            Amount = transactionRequest.Amount,
             CreatedAt = account.UpdatedAt
         };
     }
