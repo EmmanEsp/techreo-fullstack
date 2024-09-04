@@ -14,10 +14,12 @@ public class TransactionService : ITransactionService
         _context = context;        
     }
 
-    public async Task UpdateBalanceAsync(Guid accountId, decimal amount)
+    public async Task UpdateAccountBalanceAsync(AccountModel account)
     {
-        var filter = Builders<AccountModel>.Filter.Eq(a => a.Id, accountId);
-        var update = Builders<AccountModel>.Update.Set(a => a.Balance, amount);
+        var filter = Builders<AccountModel>.Filter.Eq(a => a.Id, account.Id);
+        var update = Builders<AccountModel>.Update
+            .Set(a => a.Balance, account.Balance)
+            .Set(a => a.UpdatedAt, account.UpdatedAt);
         await _context.Accounts.UpdateOneAsync(filter, update);
     }
 

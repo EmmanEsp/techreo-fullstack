@@ -5,6 +5,6 @@ namespace Fintech.API.Account.Services;
 public interface ITransactionService {
     Task CreateTransactionAsync(TransactionModel transactionModel);
     Task<AccountModel> GetAccountByCustomerIdAsync(Guid customerId);
-    Task UpdateBalanceAsync(Guid accountId, decimal amount);
+    Task UpdateAccountBalanceAsync(AccountModel account);
     Task<List<TransactionModel>> GetAllTransactionByCustomerId(Guid customerId);
 }

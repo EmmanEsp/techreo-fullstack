@@ -40,13 +40,16 @@ public class AccountUseCase : IAccountUseCase
 
     public async Task<CreateAccountResponse> CreateAccountAsync(CreateAccountRequest account)
     {
+        var date = DateTime.Now;
         var accountNumber = await GenerateAccountNumberAsync();
         var clabe = $"014421{accountNumber}0";
         var accountModel = new AccountModel() {
             CustomerId = account.CustomerId,
             AccountNumber = accountNumber,
             Clabe = clabe,
-            Balance = 0
+            Balance = 0,
+            CreatedAt = date,
+            UpdatedAt = date
         };
         await _createAccountService.CreateAccountAsync(accountModel);
         return new CreateAccountResponse() {
