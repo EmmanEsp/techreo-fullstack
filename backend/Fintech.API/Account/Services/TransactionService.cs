@@ -16,9 +16,9 @@ public class TransactionService : ITransactionService
 
     public async Task UpdateBalanceAsync(Guid accountId, decimal amount)
     {
-        var filter = Builders<TransactionModel>.Filter.Eq(a => a.Id, accountId);
-        var update = Builders<TransactionModel>.Update.Set(a => a.Amount, amount);
-        await _context.Transactions.UpdateOneAsync(filter, update);
+        var filter = Builders<AccountModel>.Filter.Eq(a => a.Id, accountId);
+        var update = Builders<AccountModel>.Update.Set(a => a.Balance, amount);
+        await _context.Accounts.UpdateOneAsync(filter, update);
     }
 
     public async Task<AccountModel> GetAccountByCustomerIdAsync(Guid customerId)

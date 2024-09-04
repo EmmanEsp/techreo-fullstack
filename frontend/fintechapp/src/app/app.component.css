@@ -1,0 +1,18 @@
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+mat-form-field {
+    width: 100%;
+    max-width: 400px;
+}
+
+.signin-response-card {
+    max-width: 400px;
+    margin: 20px auto;
+}

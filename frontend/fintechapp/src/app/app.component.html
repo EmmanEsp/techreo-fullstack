@@ -1,0 +1,71 @@
+
+<form [formGroup]="registrationForm" (ngSubmit)="onSubmitRegistration()">
+    <h4>Registro</h4>
+    <mat-form-field>
+        <mat-label for="name">Nombre(s)</mat-label>
+        <input id="name" type="text" formControlName="name" matInput placeholder="Jose Alberto">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label for="lastName">Apellidos</mat-label>
+        <input id="lastName" type="text" formControlName="lastName" matInput placeholder="Gonzales Torres">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label for="email">Email</mat-label>
+        <input id="email" type="text" formControlName="email" matInput placeholder="jose.alberto@gmail.com">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label for="phone">Celular</mat-label>
+        <input id="phone" type="text" formControlName="phone" matInput placeholder="6678980870">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label for="password">Password</mat-label>
+        <input id="password" formControlName="password" matInput type="password" ngModel>
+    </mat-form-field>
+    
+    <button mat-raised-button color="primary" type="submit">Registar</button>
+</form>
+
+<form [formGroup]="signinForm" (ngSubmit)="onSubmitSignin()">
+    <h4>Inico de sesión</h4>
+    <mat-form-field>
+        <mat-label for="user">Email o Celular</mat-label>
+        <input id="user" type="text" formControlName="user" matInput placeholder="Usuario">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label for="password">Password</mat-label>
+        <input id="password" formControlName="password" matInput type="password" ngModel>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit">Login</button>
+</form>
+
+<mat-card *ngIf="customer" class="signin-response-card">
+    <mat-card-header>
+        <mat-card-title>{{ customer.name }} {{ customer.lastName }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <p><strong>Email:</strong> {{ customer.email }}</p>
+        <p><strong>Celular:</strong> {{ customer.phone }}</p>
+        <p><strong>Numero de Cuenta:</strong> {{ customer.accountNumber }}</p>
+        <p><strong>CLABE:</strong> {{ customer.clabe }}</p>
+        <p><strong>Balance:</strong> {{ customer.balance | currency }}</p>
+    </mat-card-content>
+</mat-card>
+
+<form [formGroup]="depositForm" (ngSubmit)="onSubmitDeposit()">
+    <h4>Deposito</h4>
+    <mat-form-field>
+        <mat-label for="amount">Cantidad</mat-label>
+        <input id="amount" type="text" formControlName="amount" matInput placeholder="$100.00">
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit">Depositar</button>
+</form>
+
+<form [formGroup]="withdrawForm" (ngSubmit)="onSubmitWithdraw()">
+    <h4>Retiro</h4>
+    <mat-form-field>
+        <mat-label for="amount">Cantidad</mat-label>
+        <input id="amount" type="text" formControlName="amount" matInput placeholder="$100.00">
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit">Retirar</button>
+</form>
