@@ -23,6 +23,10 @@ public class LoginUseCase : ILoginUseCase
         var customer = await _loginService.IsEmailInUseAsync(loginRequest.User);
         customer ??= await _loginService.IsPhoneInUseAsync(loginRequest.User);
 
+        if (customer == null) {
+            throw new ArgumentException("Customer not found");
+        }
+
         if (!VerifyPassword(loginRequest.Password, customer.Password)) 
         {
             throw new ArgumentException("Invalid password");

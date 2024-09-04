@@ -20,6 +20,16 @@ class CustomerUseCase : ICustomerUseCase {
 
     public async Task<CreateCustomerResponse> CreateCustomerAsync(CreateCustomerRequest customer)
     {
+        var isCustomerEmailUnique = await _service.IsCustomerEmailUniqueAsync(customer.Email);
+        if (!isCustomerEmailUnique) {
+            throw new ArgumentException("Emal already is use.");
+        }
+        
+        var isCustomerPhoneUnique = await _service.IsCustomerPhoneUniqueAsync(customer.Phone);
+        if (!isCustomerPhoneUnique) {
+            throw new ArgumentException("Phone number already in use.");
+        }
+
         var customerModel = new CustomerModel() {
             Name = customer.Name,
             LastName = customer.LastName,
