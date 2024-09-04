@@ -30,10 +30,6 @@ interface SigninResponse {
   balance: number;
 }
 
-interface BalanceResponse {
-  amount: number
-}
-
 interface TransactionResponse {
   type: string;
   amount: number;
@@ -106,6 +102,7 @@ export class AppComponent {
         this.createAccount(response.data.customerId);
         this.showRegistrationForm = false;
         this.showSigninForm = true;
+        this.registrationForm.reset();
       },
       error: (error) => console.error('Error:', error)
     });
@@ -143,13 +140,15 @@ export class AppComponent {
       ...this.depositForm.value,
       customerId: this.customer.customerId
     };
-    this.http.post<ServiceResponse<BalanceResponse>>('http://localhost:5284/api/v1/transaction/deposit', body).subscribe({
+    this.http.post<ServiceResponse<TransactionResponse>>('http://localhost:5284/api/v1/transaction/deposit', body).subscribe({
       next: (response) => {
         if (!this.customer) {
           console.error('Customer information is not available.');
           return;
         }
-        this.customer.balance = response.data.amount
+        this.customer.balance += response.data.amount;
+        this.transactions.unshift(response.data);
+        this.depositForm.reset();
       },
       error: (error) => console.error('Error:', error)
     });
@@ -164,13 +163,15 @@ export class AppComponent {
       ...this.withdrawForm.value,
       customerId: this.customer.customerId
     };
-    this.http.post<ServiceResponse<BalanceResponse>>('http://localhost:5284/api/v1/transaction/withdraw', body).subscribe({
+    this.http.post<ServiceResponse<TransactionResponse>>('http://localhost:5284/api/v1/transaction/withdraw', body).subscribe({
       next: (response) => {
         if (!this.customer) {
           console.error('Customer information is not available.');
           return;
         }
-        this.customer.balance = response.data.amount
+        this.customer.balance -= response.data.amount;
+        this.transactions.unshift(response.data);
+        this.withdrawForm.reset();
       },
       error: (error) => console.error('Error:', error)
     });

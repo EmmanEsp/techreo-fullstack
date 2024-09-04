@@ -36,6 +36,9 @@ public class TransactionService : ITransactionService
 
     public async Task<List<TransactionModel>> GetAllTransactionByCustomerId(Guid customerId)
     {
-        return await _context.Transactions.Find(a => a.CustomerId == customerId).ToListAsync();
+        return await _context.Transactions
+            .Find(a => a.CustomerId == customerId)
+            .SortByDescending(a => a.CreatedAt)
+            .ToListAsync();
     }
 }
