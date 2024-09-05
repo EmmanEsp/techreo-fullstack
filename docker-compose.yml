@@ -3,7 +3,7 @@ services:
     image: mongo:6.0
     container_name: fintech_mongodb
     env_file:
-      - .env
+      - .env.mongodb
     ports:
       - "27017:27017"
     volumes:
@@ -16,7 +16,7 @@ services:
       dockerfile: dockerfile
     container_name: fintech-backend
     env_file:
-      - .env
+      - .env.backend
     depends_on:
       - mongodb
     ports:
