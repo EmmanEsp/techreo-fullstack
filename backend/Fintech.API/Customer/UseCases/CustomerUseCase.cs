@@ -1,15 +1,18 @@
-using Fintech.API.Domain;
 using Fintech.API.Customer.Domain;
 using Fintech.API.Customer.Services;
+using Fintech.API.Account.Domain;
+using Fintech.API.Account.UseCases;
 
 namespace Fintech.API.Customer.UseCases;
 
 class CustomerUseCase : ICustomerUseCase {
     private readonly ICustomerService _service;
+    private readonly IAccountUseCase _accountUseCase;
 
-    public CustomerUseCase(ICustomerService service)
+    public CustomerUseCase(ICustomerService service, IAccountUseCase accountUseCase)
     { 
         _service = service;
+        _accountUseCase = accountUseCase;
     }
 
     private string HashPassword(string password) 
@@ -37,6 +40,7 @@ class CustomerUseCase : ICustomerUseCase {
             Password = HashPassword(customer.Password)
         };
         var customerId = await _service.CreateCustomerAsync(customerModel);
+        await _accountUseCase.CreateAccountAsync(new CreateAccountRequest() { CustomerId = customerId });
         return new CreateCustomerResponse() { CustomerId = customerId};
     }
 }

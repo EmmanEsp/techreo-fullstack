@@ -1,7 +1,3 @@
-export interface CreateCustomerResponse {
-    customerId: string;
-}
-
 export interface SigninResponse {
     customerId: string;
     name: string;
@@ -12,6 +8,10 @@ export interface SigninResponse {
     clabe: string;
     balance: number;
     token: string;
+}
+
+export interface CreateCustomerResponse {
+    customerId: string;
 }
 
 export interface TransactionResponse {
