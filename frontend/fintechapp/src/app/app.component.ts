@@ -1,186 +1,173 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { FormsModule, ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { CreateCustomerResponse, SigninResponse, TransactionResponse, ServiceResponse } from './models'; // Import models
+import { AuthService } from './auth.service'; // Import AuthService
+import { TransactionService } from './transaction.service'; // Import TransactionService
+import { SigninResponse, TransactionResponse } from './models'; // Import the models
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, CommonModule],
+  imports: [
+    RouterOutlet,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatCardModule,
+    CommonModule
+  ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'fintechapp';
 
+  // Forms for registration, sign-in, deposit, withdraw
   registrationForm: FormGroup = new FormGroup({
-    name: new FormControl(''),
-    lastName: new FormControl(''),
-    email: new FormControl(''),
-    phone: new FormControl(''),
-    password: new FormControl('')
+    name: new FormControl('', Validators.required),
+    lastName: new FormControl('', Validators.required),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    phone: new FormControl('', Validators.required),
+    password: new FormControl('', Validators.required)
   });
-
+  
   signinForm: FormGroup = new FormGroup({
-    user: new FormControl(''),
-    password: new FormControl('')
+    user: new FormControl('', Validators.required),
+    password: new FormControl('', Validators.required)
   });
 
   depositForm: FormGroup = new FormGroup({
-    amount: new FormControl('')
+    amount: new FormControl('', Validators.required)
   });
 
   withdrawForm: FormGroup = new FormGroup({
-    amount: new FormControl('')
+    amount: new FormControl('', Validators.required)
   });
 
-  // State
+  // State variables
   customer?: SigninResponse;
   transactions: TransactionResponse[] = [];
   showSigninForm = true;
   showRegistrationForm = false;
   showMainContent = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private authService: AuthService,
+    private transactionService: TransactionService
+  ) {}
 
-  // ------------------ Account Methods ------------------
-
-  /**
-   * Creates a new account for the customer.
-   */
-  private createAccount(customerId: string) {
-    const body = { customerId };
-    this.http.post("http://localhost:5284/api/v1/account", body).subscribe({
-      next: () => console.log('Account creation successful'),
-      error: (error) => console.error('Error:', error)
-    });
-  }
-
-  /**
-   * Fetches all transactions for the given customer.
-   */
-  private getAllTransactions(customerId: string) {
-    if (!this.customer?.token) return;
-  
-    const headers = { Authorization: `Bearer ${this.customer.token}` };
-  
-    this.http.get<ServiceResponse<TransactionResponse[]>>(
-      `http://localhost:5284/api/v1/transaction/customer/${customerId}`,
-      { headers }
-    ).subscribe({
-      next: (response) => this.transactions = response.data,
-      error: (error) => console.error('Error:', error)
-    });
-  }
-
-  // ------------------ Form Submit Handlers ------------------
-
-  /**
-   * Handles the registration form submission.
-   */
-  onSubmitRegistration() {
-    this.http.post<ServiceResponse<CreateCustomerResponse>>('http://localhost:5284/api/v1/customer', this.registrationForm.value).subscribe({
-      next: (response) => {
-        this.createAccount(response.data.customerId);
-        this.toggleLoginRegistration();
-        this.registrationForm.reset();
-      },
-      error: (error) => console.error('Error:', error)
-    });
-  }
-
-  /**
-   * Handles the sign-in form submission.
-   */
-  onSubmitSignin() {
-    this.http.post<ServiceResponse<SigninResponse>>('http://localhost:5284/api/v1/signin', this.signinForm.value).subscribe({
-      next: (response) => {
-        this.customer = response.data;
-        this.getAllTransactions(response.data.customerId);
-        this.showSigninForm = false;
-        this.showMainContent = true;
-      },
-      error: (error) => console.error('Error:', error)
-    });
-  }
-
-  /**
-   * Handles the deposit form submission.
-   */
-  onSubmitDeposit() {
-    if (!this.customer || !this.customer.token) return;
-  
-    const headers = { Authorization: `Bearer ${this.customer.token}` };
-    const body = { ...this.depositForm.value, customerId: this.customer.customerId };
-  
-    this.http.post<ServiceResponse<TransactionResponse>>(
-      'http://localhost:5284/api/v1/transaction/deposit',
-      body,
-      { headers }
-    ).subscribe({
-      next: (response) => {
-        if(this.customer != null) {
-          this.customer.balance += response.data.amount;
-          this.transactions.unshift(response.data);
-          this.depositForm.reset();
-        }
-      },
-      error: (error) => console.error('Error:', error)
-    });
-  }
-
-  /**
-   * Handles the withdraw form submission.
-   */
-  onSubmitWithdraw() {
-    if (!this.customer || !this.customer.token) return;
-  
-    const withdrawAmount = this.withdrawForm.get('amount')?.value;
-  
-    if (withdrawAmount > this.customer.balance) {
-      console.error('Withdrawal amount exceeds balance');
-      return;
+  ngOnInit() {
+    const token = this.authService.getToken();
+    if (token) {
+      this.authService.getSessionData().subscribe({
+        next: (response) => {
+          this.customer = response.data;
+          this.showSigninForm = false;
+          this.showMainContent = true;
+          this.getAllTransactions();
+        },
+        error: (error) => console.error('Error:', error)
+      });
     }
-  
-    const headers = { Authorization: `Bearer ${this.customer.token}` };
-    const body = { ...this.withdrawForm.value, customerId: this.customer.customerId };
-  
-    this.http.post<ServiceResponse<TransactionResponse>>(
-      'http://localhost:5284/api/v1/transaction/withdraw',
-      body,
-      { headers }
-    ).subscribe({
-      next: (response) => {
-        if(this.customer != null) {
-          this.customer.balance -= response.data.amount;
-          this.transactions.unshift(response.data);
-          this.withdrawForm.reset();
-        }
-      },
-      error: (error) => console.error('Error:', error)
-    });
   }
 
-  // ------------------ Utility Methods ------------------
+  // Registration form submit method
+  onSubmitRegistration() {
+    if (this.registrationForm.valid) {
+      this.authService.registerCustomer(this.registrationForm.value).subscribe({
+        next: (response) => {
+          this.toggleLoginRegistration();
+          this.registrationForm.reset();
+        },
+        error: (error) => console.error('Error:', error)
+      });
+    } else {
+      console.log('Form is invalid');
+    }
+  }
 
-  /**
-   * Toggles between login and registration forms.
-   */
+  // Sign in form submit method
+  onSubmitSignin() {
+    if (this.signinForm.valid) {
+      const { user, password } = this.signinForm.value;
+      this.authService.signIn(user, password).subscribe({
+        next: (response) => {
+          this.customer = response.data;
+          this.authService.setToken(response.data.token);
+          this.getAllTransactions();
+          this.showSigninForm = false;
+          this.showMainContent = true;
+        },
+        error: (error) => console.error('Error:', error)
+      });
+    } else {
+      console.log('Form is invalid');
+    }
+  }
+
+  // Fetch all transactions
+  private getAllTransactions() {
+    if (!this.customer || !this.authService.getToken()) return;
+    this.transactionService.getAllTransactions(this.customer.customerId, this.authService.getToken()!)
+      .subscribe({
+        next: (response) => this.transactions = response.data,
+        error: (error) => console.error('Error fetching transactions:', error)
+      });
+  }
+
+  // Deposit form submit method
+  onSubmitDeposit() {
+    if (this.depositForm.valid && this.customer && this.authService.getToken()) {
+      const { amount } = this.depositForm.value;
+      this.transactionService.deposit(this.customer.customerId, amount, this.authService.getToken()!)
+        .subscribe({
+          next: (response) => {
+            this.customer!.balance += response.data.amount;
+            this.transactions.unshift(response.data);
+            this.depositForm.reset();
+          },
+          error: (error) => console.error('Error during deposit:', error)
+        });
+    }
+  }
+
+  // Withdraw form submit method
+  onSubmitWithdraw() {
+    if (this.withdrawForm.valid && this.customer && this.authService.getToken()) {
+      const { amount } = this.withdrawForm.value;
+      if (amount > this.customer!.balance) {
+        console.error('Withdrawal amount exceeds balance');
+        return;
+      }
+
+      this.transactionService.withdraw(this.customer.customerId, amount, this.authService.getToken()!)
+        .subscribe({
+          next: (response) => {
+            this.customer!.balance -= response.data.amount;
+            this.transactions.unshift(response.data);
+            this.withdrawForm.reset();
+          },
+          error: (error) => console.error('Error during withdrawal:', error)
+        });
+    }
+  }
+
+  // Toggle between registration and sign-in forms
   toggleLoginRegistration() {
     this.showSigninForm = !this.showSigninForm;
     this.showRegistrationForm = !this.showRegistrationForm;
   }
 
-  /**
-   * Logs out the user and resets the customer information.
-   */
+  // Logout and clear session
   logout() {
+    this.authService.clearToken();
     this.customer = undefined;
     this.showSigninForm = true;
     this.showMainContent = false;
