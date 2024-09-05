@@ -21,7 +21,7 @@ public class CustomerController : ControllerBase
     public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerRequest customer)
     {
         var customerResponse = await _createCustomerUseCase.CreateCustomerAsync(customer);
-        var response = SuccessResponse<CreateCustomerResponse>.Success(customerResponse);
+        var response = ServiceResponse<CreateCustomerResponse>.Success(customerResponse);
         return Ok(response);
     }
 }

@@ -21,7 +21,7 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> CreateAccount([FromBody] CreateAccountRequest account)
     {
         var accountResponse = await _createAccountUseCase.CreateAccountAsync(account);
-        var response = SuccessResponse<CreateAccountResponse>.Success(accountResponse);
+        var response = ServiceResponse<CreateAccountResponse>.Success(accountResponse);
         return Ok(response);
     }
 }
