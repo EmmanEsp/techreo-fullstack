@@ -21,7 +21,7 @@ public class TransactionController : ControllerBase
     public async Task<IActionResult> GetAllTransaction([FromRoute] Guid customerId)
     {
         var transactions = await _transactionUseCase.GetAllTransactionByCustomerId(customerId);
-        var response = Response<List<TransactionResponse>>.Success(transactions);
+        var response = SuccessResponse<List<TransactionResponse>>.Success(transactions);
         return Ok(response);
     }
 
@@ -29,7 +29,7 @@ public class TransactionController : ControllerBase
     public async Task<IActionResult> Deposit([FromBody] TransactionRequest transactionRequest)
     {
         var transaction = await _transactionUseCase.DepositAsync(transactionRequest);
-        var response = Response<TransactionResponse>.Success(transaction);
+        var response = SuccessResponse<TransactionResponse>.Success(transaction);
         return Ok(response);
     }
 
@@ -37,7 +37,7 @@ public class TransactionController : ControllerBase
     public async Task<IActionResult> Withdraw([FromBody] TransactionRequest transactionRequest)
     {
         var transaction = await _transactionUseCase.WithdrawAsync(transactionRequest);
-        var response = Response<TransactionResponse>.Success(transaction);
+        var response = SuccessResponse<TransactionResponse>.Success(transaction);
         return Ok(response);
     }
 }

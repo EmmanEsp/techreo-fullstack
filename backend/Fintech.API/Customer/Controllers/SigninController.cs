@@ -21,7 +21,7 @@ public class SigninController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginRequest login)
     {
         var loginResponse = await _loginUseCase.LoginAsync(login);
-        var response = Response<LoginResponse>.Success(loginResponse);
+        var response = SuccessResponse<LoginResponse>.Success(loginResponse);
         return Ok(response);
     }
 }

@@ -4,9 +4,9 @@ namespace Fintech.API.Customer.Domain;
 
 public class LoginRequest(string user, string password)
 {
-    [Required]
-    public string User { get; set; } = user ?? throw new ArgumentNullException(nameof(user));
+    [Required(ErrorMessage = "El usuario es requerido.")]
+    public string User { get; set; } = user;
 
-    [Required]
-    public string Password { get; set; } = password ?? throw new ArgumentNullException(nameof(password));
+    [Required(ErrorMessage = "La contraseña es requerida.")]
+    public string Password { get; set; } = password;
 }

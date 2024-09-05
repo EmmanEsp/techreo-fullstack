@@ -5,14 +5,9 @@ using Fintech.API.Customer.Services;
 
 namespace Fintech.API.Customer.UseCases;
 
-public class LoginUseCase : ILoginUseCase
+public class LoginUseCase(ILoginService loginService) : ILoginUseCase
 {
-    private readonly ILoginService _loginService;
-
-    public LoginUseCase(ILoginService loginService)
-    {
-        _loginService = loginService;
-    }
+    private readonly ILoginService _loginService = loginService;
 
     public bool VerifyPassword(string password, string hashedPassword) {
         return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
