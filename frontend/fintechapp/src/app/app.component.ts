@@ -66,7 +66,14 @@ export class AppComponent {
    * Fetches all transactions for the given customer.
    */
   private getAllTransactions(customerId: string) {
-    this.http.get<ServiceResponse<TransactionResponse[]>>(`http://localhost:5284/api/v1/transaction/customer/${customerId}`).subscribe({
+    if (!this.customer?.token) return;
+  
+    const headers = { Authorization: `Bearer ${this.customer.token}` };
+  
+    this.http.get<ServiceResponse<TransactionResponse[]>>(
+      `http://localhost:5284/api/v1/transaction/customer/${customerId}`,
+      { headers }
+    ).subscribe({
       next: (response) => this.transactions = response.data,
       error: (error) => console.error('Error:', error)
     });
@@ -107,10 +114,16 @@ export class AppComponent {
    * Handles the deposit form submission.
    */
   onSubmitDeposit() {
-    if (!this.customer) return;
-
+    if (!this.customer || !this.customer.token) return;
+  
+    const headers = { Authorization: `Bearer ${this.customer.token}` };
     const body = { ...this.depositForm.value, customerId: this.customer.customerId };
-    this.http.post<ServiceResponse<TransactionResponse>>('http://localhost:5284/api/v1/transaction/deposit', body).subscribe({
+  
+    this.http.post<ServiceResponse<TransactionResponse>>(
+      'http://localhost:5284/api/v1/transaction/deposit',
+      body,
+      { headers }
+    ).subscribe({
       next: (response) => {
         if(this.customer != null) {
           this.customer.balance += response.data.amount;
@@ -126,17 +139,23 @@ export class AppComponent {
    * Handles the withdraw form submission.
    */
   onSubmitWithdraw() {
-    if (!this.customer) return;
-
+    if (!this.customer || !this.customer.token) return;
+  
     const withdrawAmount = this.withdrawForm.get('amount')?.value;
-
+  
     if (withdrawAmount > this.customer.balance) {
       console.error('Withdrawal amount exceeds balance');
       return;
     }
-
+  
+    const headers = { Authorization: `Bearer ${this.customer.token}` };
     const body = { ...this.withdrawForm.value, customerId: this.customer.customerId };
-    this.http.post<ServiceResponse<TransactionResponse>>('http://localhost:5284/api/v1/transaction/withdraw', body).subscribe({
+  
+    this.http.post<ServiceResponse<TransactionResponse>>(
+      'http://localhost:5284/api/v1/transaction/withdraw',
+      body,
+      { headers }
+    ).subscribe({
       next: (response) => {
         if(this.customer != null) {
           this.customer.balance -= response.data.amount;

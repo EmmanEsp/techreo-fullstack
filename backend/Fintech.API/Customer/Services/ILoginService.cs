@@ -7,4 +7,5 @@ public interface ILoginService {
     Task<CustomerModel> IsPhoneInUseAsync(string phone);
     Task<CustomerModel> IsEmailInUseAsync(string email);
     Task<AccountModel> GetAccountByCustomerIdAsync(Guid customerId);
+    Task<CustomerModel> GetCustomerById(Guid customerId);
 }

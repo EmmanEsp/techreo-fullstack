@@ -42,4 +42,21 @@ public class LoginUseCase(ILoginService loginService, IJwtService token) : ILogi
             Token = _token.GenerateJwtToken(customer.Id)
         };
     }
+
+    public async Task<LoginResponse> GetLoginDataAsync(Guid customerId, string token)
+    {
+        var customer = await _loginService.GetCustomerById(customerId);
+        var account = await _loginService.GetAccountByCustomerIdAsync(customer.Id);
+        return new LoginResponse() {
+            CustomerId = customer.Id,
+            Name = customer.Name,
+            LastName = customer.LastName,
+            Email = customer.Email,
+            Phone = customer.Phone,
+            AccountNumber = account.AccountNumber,
+            Balance = account.Balance,
+            Clabe = account.Clabe,
+            Token = token
+        };
+    }
 }

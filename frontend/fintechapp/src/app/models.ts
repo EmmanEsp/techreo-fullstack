@@ -11,6 +11,7 @@ export interface SigninResponse {
     accountNumber: string;
     clabe: string;
     balance: number;
+    token: string;
 }
 
 export interface TransactionResponse {

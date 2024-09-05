@@ -31,4 +31,9 @@ public class LoginService : ILoginService
         var customer = await _context.Customers.Find(a => a.Email == email).FirstOrDefaultAsync();
         return customer;
     }
+
+    public async Task<CustomerModel> GetCustomerById(Guid customerId)
+    {
+        return await _context.Customers.Find(a => a.Id == customerId).FirstOrDefaultAsync();
+    }
 }
