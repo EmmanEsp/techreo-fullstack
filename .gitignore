@@ -1,4 +1,6 @@
 .env
+.env.mongodb
+.env.backend
 mongo-data/
 .DS_Store
 
