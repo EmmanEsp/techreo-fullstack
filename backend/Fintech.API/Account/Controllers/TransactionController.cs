@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 using Fintech.API.Domain;
 using Fintech.API.Account.UseCases;
@@ -6,6 +7,7 @@ using Fintech.API.Account.Domain;
 
 namespace Fintech.API.Account.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/v1/transaction")]
 public class TransactionController : ControllerBase

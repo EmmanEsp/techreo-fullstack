@@ -2,12 +2,14 @@ using BCrypt;
 
 using Fintech.API.Customer.Domain;
 using Fintech.API.Customer.Services;
+using Fintech.API.Services;
 
 namespace Fintech.API.Customer.UseCases;
 
-public class LoginUseCase(ILoginService loginService) : ILoginUseCase
+public class LoginUseCase(ILoginService loginService, IJwtService token) : ILoginUseCase
 {
     private readonly ILoginService _loginService = loginService;
+    private readonly IJwtService _token = token;
 
     public bool VerifyPassword(string password, string hashedPassword) {
         return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
@@ -36,7 +38,8 @@ public class LoginUseCase(ILoginService loginService) : ILoginUseCase
             Phone = customer.Phone,
             AccountNumber = accountModel.AccountNumber,
             Balance = accountModel.Balance,
-            Clabe = accountModel.Clabe
+            Clabe = accountModel.Clabe,
+            Token = _token.GenerateJwtToken(customer.Id)
         };
     }
 }
