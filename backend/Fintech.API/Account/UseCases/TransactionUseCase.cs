@@ -1,5 +1,3 @@
-using System;
-
 using Fintech.API.Account.Domain;
 using Fintech.API.Account.Services;
 
@@ -30,6 +28,11 @@ public class TransactionUseCase(ITransactionService transactionService) : ITrans
     private async Task<AccountModel> CreateTransaction(TransactionRequest transactionRequest, string type)
     {
         var account = await _transactionService.GetAccountByCustomerIdAsync(transactionRequest.CustomerId);
+        if(type == WITHDRAW) {
+            if (transactionRequest.Amount > account.Balance) {
+                throw new ArgumentException("La cantidad a retirar es mayor al balance de la cuenta.");
+            }
+        }
         var date = DateTime.Now;
         account.UpdatedAt = date;
 
