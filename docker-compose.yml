@@ -27,5 +27,7 @@ services:
       context: ./frontend/fintechapp
       dockerfile: dockerfile
     container_name: fintech-frontend
+    depends_on:
+      - backend
     ports:
       - "4200:80"

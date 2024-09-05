@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TransactionResponse, ServiceResponse } from './models';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TransactionService {
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
@@ -14,7 +16,7 @@ export class TransactionService {
   getAllTransactions(customerId: string, token: string): Observable<ServiceResponse<TransactionResponse[]>> {
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
     return this.http.get<ServiceResponse<TransactionResponse[]>>(
-      `http://localhost:5284/api/v1/transaction/customer/${customerId}`, { headers }
+      `${this.apiUrl}/transaction/customer/${customerId}`, { headers }
     );
   }
 
@@ -23,7 +25,7 @@ export class TransactionService {
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
     const body = { customerId, amount };
     return this.http.post<ServiceResponse<TransactionResponse>>(
-      'http://localhost:5284/api/v1/transaction/deposit', body, { headers }
+      `${this.apiUrl}/transaction/deposit`, body, { headers }
     );
   }
 
@@ -32,7 +34,7 @@ export class TransactionService {
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
     const body = { customerId, amount };
     return this.http.post<ServiceResponse<TransactionResponse>>(
-      'http://localhost:5284/api/v1/transaction/withdraw', body, { headers }
+      `${this.apiUrl}/transaction/withdraw`, body, { headers }
     );
   }
 }
