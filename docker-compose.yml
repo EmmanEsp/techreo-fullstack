@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   mongodb:
     image: mongo:6.0
@@ -11,3 +9,23 @@ services:
     volumes:
       - ./mongo-data:/data/db
       - ./mongo-init:/docker-entrypoint-initdb.d
+
+  backend:
+    build:
+      context: ./backend/Fintech.API
+      dockerfile: dockerfile
+    container_name: fintech-backend
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+    ports:
+      - "5001:8080"
+
+  frontend:
+    build:
+      context: ./frontend/fintechapp
+      dockerfile: dockerfile
+    container_name: fintech-frontend
+    ports:
+      - "4200:80"
