@@ -27,4 +27,7 @@ public class LoginResponse
 
     [JsonPropertyName("balance")]
     public required decimal Balance { get; set; }
+
+    [JsonPropertyName("token")]
+    public required string Token { get; set; }
 }
