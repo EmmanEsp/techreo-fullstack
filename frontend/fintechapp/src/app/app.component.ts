@@ -80,36 +80,28 @@ export class AppComponent implements OnInit {
 
   // Registration form submit method
   onSubmitRegistration() {
-    if (this.registrationForm.valid) {
-      this.authService.registerCustomer(this.registrationForm.value).subscribe({
-        next: (response) => {
-          this.toggleLoginRegistration();
-          this.registrationForm.reset();
-        },
-        error: (error) => console.error('Error:', error)
-      });
-    } else {
-      console.log('Form is invalid');
-    }
+    this.authService.registerCustomer(this.registrationForm.value).subscribe({
+      next: (response) => {
+        this.toggleLoginRegistration();
+        this.registrationForm.reset();
+      },
+      error: (error) => console.error('Error:', error)
+    });
   }
 
   // Sign in form submit method
   onSubmitSignin() {
-    if (this.signinForm.valid) {
-      const { user, password } = this.signinForm.value;
-      this.authService.signIn(user, password).subscribe({
-        next: (response) => {
-          this.customer = response.data;
-          this.authService.setToken(response.data.token);
-          this.getAllTransactions();
-          this.showSigninForm = false;
-          this.showMainContent = true;
-        },
-        error: (error) => console.error('Error:', error)
-      });
-    } else {
-      console.log('Form is invalid');
-    }
+    const { user, password } = this.signinForm.value;
+    this.authService.signIn(user, password).subscribe({
+      next: (response) => {
+        this.customer = response.data;
+        this.authService.setToken(response.data.token);
+        this.getAllTransactions();
+        this.showSigninForm = false;
+        this.showMainContent = true;
+      },
+      error: (error) => console.error('Error:', error)
+    });
   }
 
   // Fetch all transactions
