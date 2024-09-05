@@ -128,6 +128,13 @@ export class AppComponent {
   onSubmitWithdraw() {
     if (!this.customer) return;
 
+    const withdrawAmount = this.withdrawForm.get('amount')?.value;
+
+    if (withdrawAmount > this.customer.balance) {
+      console.error('Withdrawal amount exceeds balance');
+      return;
+    }
+
     const body = { ...this.withdrawForm.value, customerId: this.customer.customerId };
     this.http.post<ServiceResponse<TransactionResponse>>('http://localhost:5284/api/v1/transaction/withdraw', body).subscribe({
       next: (response) => {
