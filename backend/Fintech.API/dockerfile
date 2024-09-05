@@ -1,0 +1,21 @@
+# Use the official .NET SDK image to build the app
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+WORKDIR /app
+
+# Copy everything and restore dependencies
+COPY . ./
+RUN dotnet restore
+
+# Build the app in Release mode
+RUN dotnet publish -c Release -o /out
+
+# Use the runtime image for running the app
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build-env /out .
+
+# Expose port 80 for the API
+EXPOSE 8080
+
+# Run the application
+ENTRYPOINT ["dotnet", "Fintech.API.dll"]
