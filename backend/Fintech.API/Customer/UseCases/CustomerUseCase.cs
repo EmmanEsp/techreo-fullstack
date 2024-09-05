@@ -1,5 +1,4 @@
-using BCrypt;
-
+using Fintech.API.Domain;
 using Fintech.API.Customer.Domain;
 using Fintech.API.Customer.Services;
 
@@ -22,12 +21,12 @@ class CustomerUseCase : ICustomerUseCase {
     {
         var isCustomerEmailUnique = await _service.IsCustomerEmailUniqueAsync(customer.Email);
         if (!isCustomerEmailUnique) {
-            throw new ArgumentException("Emal already is use.");
+            throw new ArgumentException("El Email ya esta en uso.");
         }
         
         var isCustomerPhoneUnique = await _service.IsCustomerPhoneUniqueAsync(customer.Phone);
         if (!isCustomerPhoneUnique) {
-            throw new ArgumentException("Phone number already in use.");
+            throw new ArgumentException("El celular ya esta en uso.");
         }
 
         var customerModel = new CustomerModel() {
