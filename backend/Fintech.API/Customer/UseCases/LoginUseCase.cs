@@ -21,12 +21,12 @@ public class LoginUseCase(ILoginService loginService, IJwtService token) : ILogi
         customer ??= await _loginService.IsPhoneInUseAsync(loginRequest.User);
 
         if (customer == null) {
-            throw new ArgumentException("Customer not found");
+            throw new ArgumentException("Usuario no encontrado.");
         }
 
         if (!VerifyPassword(loginRequest.Password, customer.Password)) 
         {
-            throw new ArgumentException("Invalid password");
+            throw new ArgumentException("La password no coincide.");
         }
         
         var accountModel = await _loginService.GetAccountByCustomerIdAsync(customer.Id);

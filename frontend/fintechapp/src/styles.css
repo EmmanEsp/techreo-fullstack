@@ -26,8 +26,9 @@ mat-form-field {
 }
 
 .signin-response-card {
-    max-width: 400px;
-    margin: 20px auto;
+    width: 100%;
+    max-width: 25rem;
+    margin: 1.25rem auto;
 }
 
 .transactions-card {
@@ -174,4 +175,33 @@ button {
 
 .transactions-title {
     margin-bottom: 15px;
+}
+
+.wrapper {
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    gap: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.info-section {
+    width: 27rem;
+}
+
+.transactions-section {
+    width: 35rem;
+}
+
+.transactions-card {
+    width: 100%;
+    max-width: 35rem;
+    margin: 1.25rem auto;
+}
+
+.scrollable-content {
+    height: 400px; /* Set the desired height for the card */
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
 }
