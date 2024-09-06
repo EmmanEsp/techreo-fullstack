@@ -1,7 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
 form {
     display: flex;
     flex-direction: column;
@@ -39,9 +47,12 @@ mat-form-field {
 
 .centered-button {
     display: flex;
-    justify-content: center; /* Horizontally centers the button */
-    align-items: center;     /* Vertically centers the button */
-    height: 70px;           /* Adjust height to position the button */
+    justify-content: center;
+    /* Horizontally centers the button */
+    align-items: center;
+    /* Vertically centers the button */
+    height: 70px;
+    /* Adjust height to position the button */
 }
 
 .info-title {
@@ -53,7 +64,8 @@ mat-form-field {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 20px; /* Ensure spinner does not overlap */
+    margin-top: 20px;
+    /* Ensure spinner does not overlap */
 }
 
 .loading-spinner mat-spinner {
@@ -67,23 +79,99 @@ mat-form-field {
     margin-top: 10px;
     padding: 10px;
 }
-  
-  /* Ensures button container is properly spaced from other elements */
+
+/* Ensures button container is properly spaced from other elements */
 .button-container {
     display: flex;
     justify-content: space-between;
     gap: 10px;
-    margin-top: 20px; /* Add spacing between the error message and buttons */
+    margin-top: 20px;
+    /* Add spacing between the error message and buttons */
 }
-  
+
 .loading-spinner {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 20px; /* Ensure spinner does not overlap */
+    margin-top: 20px;
+    /* Ensure spinner does not overlap */
 }
-  
+
 button {
-    min-width: 100px; /* Adjust to make the buttons more uniform */
+    min-width: 100px;
+    /* Adjust to make the buttons more uniform */
+}
+
+.snackbar-error {
+    background-color: #f44336;
+    /* Red background */
+    color: #fff;
+    /* White text */
+    text-align: center;
+    /* Center the text */
+    font-size: 16px;
+    /* Adjust the font size */
+}
+
+.transactions-card {
+    margin-top: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.transaction-item {
+    margin-bottom: 10px;
+}
+
+.transaction-card {
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.transaction-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.transaction-type {
+    margin-left: 10px;
+    font-size: 1.2em;
+    line-height: 24px;
+    margin-bottom: 0px;
+}
+
+.transaction-amount,
+.transaction-date {
+    font-size: 1.1em;
+}
+
+.deposit-card {
+    border-left: 5px solid #4caf50;
+    /* Green for deposits */
+}
+
+.withdrawal-card {
+    border-left: 5px solid #f44336;
+    /* Red for withdrawals */
+}
+
+.icon-deposit {
+    color: #4caf50;
+    margin-bottom: 14.400px;
+}
+
+.icon-withdrawal {
+    color: #f44336;
+    margin-bottom: 14.400px;
+}
+
+.transaction-card mat-icon {
+    font-size: 24px;
+    vertical-align: middle;
+}
+
+.transactions-title {
+    margin-bottom: 15px;
 }

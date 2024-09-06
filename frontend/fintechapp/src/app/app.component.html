@@ -5,10 +5,17 @@
     <mat-form-field>
         <mat-label for="user">Email o Celular</mat-label>
         <input id="user" type="text" formControlName="user" matInput placeholder="Usuario">
+
+        <mat-error *ngIf="signinForm.get('user')?.touched && signinForm.get('user')?.hasError('required')">
+            Debe contener un numero de celular o email valido.
+        </mat-error>
     </mat-form-field>
     <mat-form-field>
         <mat-label for="password">Password</mat-label>
-        <input id="signing-password" formControlName="password" matInput type="password" ngModel>
+        <input id="signing-password" formControlName="password" matInput type="password">
+        <mat-error *ngIf="signinForm.get('password')?.touched && signinForm.get('password')?.hasError('required')">
+            Debe contener una contraseña valida.
+        </mat-error>
     </mat-form-field>
     <div class="button-container">
         <button mat-raised-button color="primary" type="submit">Login</button>
@@ -37,7 +44,15 @@
         <h4>Deposito</h4>
         <mat-form-field>
             <mat-label for="amount">Cantidad</mat-label>
-            <input id="deposit-amount" type="text" formControlName="amount" matInput placeholder="$100.00">
+            <input id="deposit-amount" type="number" formControlName="amount" matInput placeholder="$100.00" (input)="validateAmount($event)" />
+            <mat-hint align="start">Debe ser una cantidad mayor a 0.</mat-hint>
+
+            <mat-error *ngIf="depositForm.get('amount')?.touched && depositForm.get('amount')?.hasError('required')">
+                Debe contener una cantidad mayor a 0.
+            </mat-error>
+            <mat-error *ngIf="depositForm.get('amount')?.touched && depositForm.get('amount')?.hasError('min')">
+                El valor minimo es 0.01
+            </mat-error>
         </mat-form-field>
         <button mat-raised-button color="primary" type="submit">Depositar</button>
     </form>
@@ -46,22 +61,41 @@
         <h4>Retiro</h4>
         <mat-form-field>
             <mat-label for="amount">Cantidad</mat-label>
-            <input id="withdraw-amount" type="text" formControlName="amount" matInput placeholder="$100.00">
+            <input id="withdraw-amount" type="number" formControlName="amount" matInput placeholder="$100.00" (input)="validateAmount($event)" />
+            <mat-hint align="start">Debe ser una cantidad mayor a 0 y menor al balance.</mat-hint>
+
+            <mat-error *ngIf="withdrawForm.get('amount')?.touched && withdrawForm.get('amount')?.hasError('required')">
+                Debe contener una cantidad mayor a 0.
+            </mat-error>
+            <mat-error *ngIf="withdrawForm.get('amount')?.touched && withdrawForm.get('amount')?.hasError('min')">
+                El valor minimo es 0.01
+            </mat-error>
         </mat-form-field>
         <button mat-raised-button color="primary" type="submit">Retirar</button>
     </form>
 
     <mat-card *ngIf="transactions.length > 0" class="transactions-card">
-        <mat-card-header>
-            <mat-card-title>Transactions</mat-card-title>
+        <mat-card-header class="transactions-title">
+            <mat-card-title>Historial de Transacciones</mat-card-title>
         </mat-card-header>
         <mat-card-content>
             <div *ngFor="let transaction of transactions" class="transaction-item">
-                <mat-card>
+                <mat-card class="transaction-card"
+                    [ngClass]="{'deposit-card': transaction.type === 'deposit', 'withdrawal-card': transaction.type === 'withdrawal'}">
                     <mat-card-content>
-                        <p><strong>Tipo:</strong> {{ transaction.type }}</p>
-                        <p><strong>Cantidad:</strong> {{ transaction.amount | currency }}</p>
-                        <p><strong>Fecha:</strong> {{ transaction.createdAt | date: 'dd/MM/yy HH:mm' }}</p>
+                        <div class="transaction-header">
+                            <mat-icon *ngIf="transaction.type === 'Deposit'"
+                                class="icon-deposit">arrow_downward</mat-icon>
+                            <mat-icon *ngIf="transaction.type === 'Withdraw'"
+                                class="icon-withdrawal">arrow_upward</mat-icon>
+                            <p class="transaction-type">{{ transaction.type | transactionType }}</p>
+                        </div>
+                        <p class="transaction-amount">
+                            <strong>Cantidad:</strong> {{ transaction.amount | currency }}
+                        </p>
+                        <p class="transaction-date">
+                            <strong>Fecha:</strong> {{ transaction.createdAt | date: 'dd/MM/yy HH:mm' }}
+                        </p>
                     </mat-card-content>
                 </mat-card>
             </div>
