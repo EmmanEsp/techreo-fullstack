@@ -22,24 +22,57 @@ public class TransactionController : ControllerBase
     [HttpGet("customer/{customerId}")]
     public async Task<IActionResult> GetAllTransaction([FromRoute] Guid customerId)
     {
-        var transactions = await _transactionUseCase.GetAllTransactionByCustomerId(customerId);
-        var response = SuccessResponse<List<TransactionResponse>>.Success(transactions);
-        return Ok(response);
+        try 
+        {
+            var transactions = await _transactionUseCase.GetAllTransactionByCustomerId(customerId);
+            var response = SuccessResponse<List<TransactionResponse>>.Success(transactions);
+            return Ok(response);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(BadResponse.Fail(ex.Message));
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, BadResponse.Error("Error en el servidor al procesar la solicitud, intentelo mas tarde."));
+        }
     }
 
     [HttpPost("deposit")]
     public async Task<IActionResult> Deposit([FromBody] TransactionRequest transactionRequest)
     {
-        var transaction = await _transactionUseCase.DepositAsync(transactionRequest);
-        var response = SuccessResponse<TransactionResponse>.Success(transaction);
-        return Ok(response);
+        try
+        {
+            var transaction = await _transactionUseCase.DepositAsync(transactionRequest);
+            var response = SuccessResponse<TransactionResponse>.Success(transaction);
+            return Ok(response);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(BadResponse.Fail(ex.Message));
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, BadResponse.Error("Error en el servidor al procesar la solicitud, intentelo mas tarde."));
+        }
     }
 
     [HttpPost("withdraw")]
     public async Task<IActionResult> Withdraw([FromBody] TransactionRequest transactionRequest)
     {
-        var transaction = await _transactionUseCase.WithdrawAsync(transactionRequest);
-        var response = SuccessResponse<TransactionResponse>.Success(transaction);
-        return Ok(response);
+        try
+        {
+            var transaction = await _transactionUseCase.WithdrawAsync(transactionRequest);
+            var response = SuccessResponse<TransactionResponse>.Success(transaction);
+            return Ok(response);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(BadResponse.Fail(ex.Message));
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, BadResponse.Error("Error en el servidor al procesar la solicitud, intentelo mas tarde."));
+        }
     }
 }

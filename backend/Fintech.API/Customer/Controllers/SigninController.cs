@@ -54,20 +54,30 @@ public class SigninController : ControllerBase
     [HttpPost("session-data")]
     public async Task<IActionResult> SessionData()
     {
-        var token = GetJwtTokenFromHeader();
-        if (string.IsNullOrEmpty(token))
-        {
-            return Unauthorized("Authorization header is missing or invalid.");
-        }
+        try {
+            var token = GetJwtTokenFromHeader();
+            if (string.IsNullOrEmpty(token))
+            {
+                return Unauthorized("Authorization header is missing or invalid.");
+            }
 
-        var customerId = GetCustomerIdFromClaims();
-        if (customerId == null)
-        {
-            return Unauthorized("Identification not found in token.");
-        }
+            var customerId = GetCustomerIdFromClaims();
+            if (customerId == null)
+            {
+                return Unauthorized("Identification not found in token.");
+            }
 
-        var sessionData = await _loginUseCase.GetLoginDataAsync(customerId.Value, token);
-        var response = SuccessResponse<LoginResponse>.Success(sessionData);
-        return Ok(response);
+            var sessionData = await _loginUseCase.GetLoginDataAsync(customerId.Value, token);
+            var response = SuccessResponse<LoginResponse>.Success(sessionData);
+            return Ok(response);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(BadResponse.Fail(ex.Message));
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, BadResponse.Error("Error en el servidor al procesar la solicitud, intentelo mas tarde."));
+        }
     }
 }
