@@ -6,9 +6,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
-import { AuthService } from './auth.service'; // Import AuthService
-import { TransactionService } from './transaction.service'; // Import TransactionService
-import { SigninResponse, TransactionResponse } from './models'; // Import the models
+import { AuthService } from './auth.service';
+import { TransactionService } from './transaction.service';
+import { SigninResponse, TransactionResponse } from './models';
+import { RegistrationComponent } from './registration.component'; 
 
 @Component({
   selector: 'app-root',
@@ -21,7 +22,8 @@ import { SigninResponse, TransactionResponse } from './models'; // Import the mo
     MatInputModule,
     MatButtonModule,
     MatCardModule,
-    CommonModule
+    CommonModule,
+    RegistrationComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
@@ -31,11 +33,11 @@ export class AppComponent implements OnInit {
 
   // Forms for registration, sign-in, deposit, withdraw
   registrationForm: FormGroup = new FormGroup({
-    name: new FormControl('', Validators.required),
-    lastName: new FormControl('', Validators.required),
+    name: new FormControl('', [Validators.required, Validators.minLength(2)]),
+    lastName: new FormControl('', [Validators.required, Validators.minLength(2)]),
     email: new FormControl('', [Validators.required, Validators.email]),
-    phone: new FormControl('', Validators.required),
-    password: new FormControl('', Validators.required)
+    phone: new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]),
+    password: new FormControl('', [Validators.required, Validators.minLength(6)])
   });
   
   signinForm: FormGroup = new FormGroup({
@@ -76,17 +78,6 @@ export class AppComponent implements OnInit {
         error: (error) => console.error('Error:', error)
       });
     }
-  }
-
-  // Registration form submit method
-  onSubmitRegistration() {
-    this.authService.registerCustomer(this.registrationForm.value).subscribe({
-      next: (response) => {
-        this.toggleLoginRegistration();
-        this.registrationForm.reset();
-      },
-      error: (error) => console.error('Error:', error)
-    });
   }
 
   // Sign in form submit method

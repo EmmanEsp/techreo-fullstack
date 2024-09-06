@@ -1,0 +1,72 @@
+<form [formGroup]="registrationForm" (ngSubmit)="onSubmitRegistration()">
+  <h4>Registro</h4>
+
+  <mat-form-field>
+    <mat-label for="name">Nombre(s)</mat-label>
+    <input id="name" type="text" formControlName="name" matInput placeholder="Jose Alberto">
+    <mat-error *ngIf="registrationForm.get('name')?.touched && registrationForm.get('name')?.hasError('required')">
+      Nombre es requerido
+    </mat-error>
+    <mat-error *ngIf="registrationForm.get('name')?.touched && registrationForm.get('name')?.hasError('minlength')">
+      Debe contener una longitud mínima de 2 caracteres.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label for="lastName">Apellidos</mat-label>
+    <input id="lastName" type="text" formControlName="lastName" matInput placeholder="Gonzales Torres">
+    <mat-error *ngIf="registrationForm.get('lastName')?.touched && registrationForm.get('lastName')?.hasError('required')">
+      Apellidos son requeridos
+    </mat-error>
+    <mat-error *ngIf="registrationForm.get('lastName')?.touched && registrationForm.get('lastName')?.hasError('minlength')">
+      Debe contener una longitud mínima de 2 caracteres.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label for="email">Email</mat-label>
+    <input id="email" type="text" formControlName="email" matInput placeholder="jose.alberto@gmail.com">
+    <mat-hint align="start">Debe ser un email válido.</mat-hint>
+    <mat-error *ngIf="registrationForm.get('email')?.touched && registrationForm.get('email')?.hasError('required')">
+      Email es requerido
+    </mat-error>
+    <mat-error *ngIf="registrationForm.get('email')?.touched && registrationForm.get('email')?.hasError('email')">
+      Tiene que ser un email con estructura válida
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label for="phone">Celular</mat-label>
+    <input id="phone" type="number" formControlName="phone" matInput placeholder="6678980870">
+    <mat-hint align="start">Debe contener exactamente 10 dígitos.</mat-hint>
+    <mat-error *ngIf="registrationForm.get('phone')?.touched && registrationForm.get('phone')?.hasError('required')">
+      Celular es requerido
+    </mat-error>
+    <mat-error *ngIf="registrationForm.get('phone')?.touched && (registrationForm.get('phone')?.hasError('minlength') || registrationForm.get('phone')?.hasError('maxlength'))">
+      El celular debe contener exactamente 10 dígitos.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label for="password">Password</mat-label>
+    <input id="register-password" formControlName="password" matInput type="password">
+    <mat-hint align="start">Debe contener 6 caracteres o más.</mat-hint>
+    <mat-error *ngIf="registrationForm.get('password')?.touched && registrationForm.get('password')?.hasError('required')">
+      Password es requerido
+    </mat-error>
+    <mat-error *ngIf="registrationForm.get('password')?.touched && registrationForm.get('password')?.hasError('minlength')">
+      Password tiene que ser 6 caracteres o más.
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Show spinner when loading -->
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner></mat-spinner>
+    <p>Procesando solicitud...</p>
+  </div>
+
+  <div *ngIf="!isLoading" class="button-container">
+    <button mat-raised-button color="primary" type="submit">Registrar</button>
+    <button mat-raised-button color="accent" type="button" (click)="toggleLoginRegistration()">Cancelar</button>
+  </div>
+</form>
