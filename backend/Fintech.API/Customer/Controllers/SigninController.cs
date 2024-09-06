@@ -54,7 +54,8 @@ public class SigninController : ControllerBase
     [HttpPost("session-data")]
     public async Task<IActionResult> SessionData()
     {
-        try {
+        try 
+        {
             var token = GetJwtTokenFromHeader();
             if (string.IsNullOrEmpty(token))
             {
