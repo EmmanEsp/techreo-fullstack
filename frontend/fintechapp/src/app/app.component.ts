@@ -10,6 +10,9 @@ import { AuthService } from './auth.service';
 import { TransactionService } from './transaction.service';
 import { SigninResponse, TransactionResponse } from './models';
 import { RegistrationComponent } from './registration.component'; 
+import { MatSnackBar } from '@angular/material/snack-bar'; 
+import { MatIconModule } from '@angular/material/icon';
+import { TransactionTypePipe } from './transaction-type.pipe';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +26,9 @@ import { RegistrationComponent } from './registration.component';
     MatButtonModule,
     MatCardModule,
     CommonModule,
-    RegistrationComponent
+    RegistrationComponent,
+    MatIconModule,
+    TransactionTypePipe
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
@@ -31,26 +36,18 @@ import { RegistrationComponent } from './registration.component';
 export class AppComponent implements OnInit {
   title = 'fintechapp';
 
-  // Forms for registration, sign-in, deposit, withdraw
-  registrationForm: FormGroup = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.minLength(2)]),
-    lastName: new FormControl('', [Validators.required, Validators.minLength(2)]),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    phone: new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]),
-    password: new FormControl('', [Validators.required, Validators.minLength(6)])
-  });
-  
+  // Forms for sign-in, deposit, withdraw
   signinForm: FormGroup = new FormGroup({
-    user: new FormControl('', Validators.required),
-    password: new FormControl('', Validators.required)
+    user: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required])
   });
 
   depositForm: FormGroup = new FormGroup({
-    amount: new FormControl('', Validators.required)
+    amount: new FormControl('', [Validators.required, Validators.min(1)])
   });
 
   withdrawForm: FormGroup = new FormGroup({
-    amount: new FormControl('', Validators.required)
+    amount: new FormControl('', [Validators.required, Validators.min(1)])
   });
 
   // State variables
@@ -62,7 +59,8 @@ export class AppComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private transactionService: TransactionService
+    private transactionService: TransactionService,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -82,6 +80,10 @@ export class AppComponent implements OnInit {
 
   // Sign in form submit method
   onSubmitSignin() {
+    if (!this.signinForm.valid) {
+      this.signinForm.markAllAsTouched();
+      return;
+    }
     const { user, password } = this.signinForm.value;
     this.authService.signIn(user, password).subscribe({
       next: (response) => {
@@ -90,8 +92,17 @@ export class AppComponent implements OnInit {
         this.getAllTransactions();
         this.showSigninForm = false;
         this.showMainContent = true;
+        this.signinForm.reset();
       },
-      error: (error) => console.error('Error:', error)
+      error: (error) => {
+        console.error('Error:', error);
+        this.snackBar.open(`Las credenciales no coinciden con ningún usuario.`, '', {
+          duration: 3000,
+          panelClass: ['snackbar-error'],
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom'
+        });
+      }
     });
   }
 
@@ -115,6 +126,12 @@ export class AppComponent implements OnInit {
             this.customer!.balance += response.data.amount;
             this.transactions.unshift(response.data);
             this.depositForm.reset();
+            this.snackBar.open(`Se ha depositado a tu cuenta $${amount} con éxito.`, '', {
+              duration: 3000,
+              panelClass: ['snackbar-error'],
+              horizontalPosition: 'center',
+              verticalPosition: 'bottom'
+            });
           },
           error: (error) => console.error('Error during deposit:', error)
         });
@@ -123,10 +140,21 @@ export class AppComponent implements OnInit {
 
   // Withdraw form submit method
   onSubmitWithdraw() {
+    if (this.withdrawForm.value.amount <= 0) {
+      this.withdrawForm.markAllAsTouched();
+      return;
+    }
     if (this.withdrawForm.valid && this.customer && this.authService.getToken()) {
       const { amount } = this.withdrawForm.value;
       if (amount > this.customer!.balance) {
         console.error('Withdrawal amount exceeds balance');
+        this.snackBar.open('No tienes los fondos suficientes', '', {
+          duration: 3000,
+          panelClass: ['snackbar-error'],
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom'
+        });
+        this.withdrawForm.reset();
         return;
       }
 
@@ -136,6 +164,12 @@ export class AppComponent implements OnInit {
             this.customer!.balance -= response.data.amount;
             this.transactions.unshift(response.data);
             this.withdrawForm.reset();
+            this.snackBar.open(`Se ha retirado de tu cuenta $${response.data.amount} con éxito.`, '', {
+              duration: 3000,
+              panelClass: ['snackbar-error'],
+              horizontalPosition: 'center',
+              verticalPosition: 'bottom'
+            });
           },
           error: (error) => console.error('Error during withdrawal:', error)
         });
@@ -154,5 +188,24 @@ export class AppComponent implements OnInit {
     this.customer = undefined;
     this.showSigninForm = true;
     this.showMainContent = false;
+  }
+
+  validateAmount(event: any) {
+    const input = event.target;
+    let value = input.value;
+
+    // Prevent negative values
+    if (value < 0) {
+      input.value = '';
+      return;
+    }
+
+    // Check if the value already has a decimal part and limit it to 2 decimal places
+    if (value.includes('.')) {
+      const [integerPart, decimalPart] = value.split('.');
+      if (decimalPart.length > 2) {
+        input.value = `${integerPart}.${decimalPart.slice(0, 2)}`; // Keep only the first two decimals
+      }
+    }
   }
 }
