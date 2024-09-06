@@ -2,3 +2,88 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+mat-form-field {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 10px;
+}
+
+.signin-response-card {
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+.transactions-card {
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.transaction-item {
+    margin-bottom: 10px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.centered-button {
+    display: flex;
+    justify-content: center; /* Horizontally centers the button */
+    align-items: center;     /* Vertically centers the button */
+    height: 70px;           /* Adjust height to position the button */
+}
+
+.info-title {
+    margin-bottom: 20px;
+}
+
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px; /* Ensure spinner does not overlap */
+}
+
+.loading-spinner mat-spinner {
+    margin-bottom: 10px;
+}
+
+.error-message-card {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-left: 5px solid #f5c6cb;
+    margin-top: 10px;
+    padding: 10px;
+}
+  
+  /* Ensures button container is properly spaced from other elements */
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px; /* Add spacing between the error message and buttons */
+}
+  
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px; /* Ensure spinner does not overlap */
+}
+  
+button {
+    min-width: 100px; /* Adjust to make the buttons more uniform */
+}

@@ -28,21 +28,21 @@ export class AuthService {
     localStorage.removeItem(this.tokenKey);
   }
 
-  // Register a new customer
+  // Register a new customer with error handling
   registerCustomer(data: any): Observable<ServiceResponse<CreateCustomerResponse>> {
     return this.http.post<ServiceResponse<CreateCustomerResponse>>(
       `${this.apiUrl}/customer`, data
     );
   }
 
-  // Sign in a customer and retrieve the session data
+  // Sign in a customer with error handling
   signIn(user: string, password: string): Observable<ServiceResponse<SigninResponse>> {
     return this.http.post<ServiceResponse<SigninResponse>>(
       `${this.apiUrl}/signin`, { user, password }
     );
   }
 
-  // Get session data using the stored token
+  // Get session data with error handling
   getSessionData(): Observable<ServiceResponse<SigninResponse>> {
     const token = this.getToken();
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
