@@ -20,8 +20,18 @@ public class CustomerController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerRequest customer)
     {
-        var customerResponse = await _createCustomerUseCase.CreateCustomerAsync(customer);
-        var response = SuccessResponse<CreateCustomerResponse>.Success(customerResponse);
-        return Ok(response);
+        try {
+            var customerResponse = await _createCustomerUseCase.CreateCustomerAsync(customer);
+            var response = SuccessResponse<CreateCustomerResponse>.Success(customerResponse);
+            return Ok(response);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(BadResponse.Fail(ex.Message));
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, BadResponse.Error("Error en el servidor al procesar la solicitud, intentelo mas tarde."));
+        }
     }
 }
