@@ -23,15 +23,21 @@ Para configurar las variables de entorno, sigue estos pasos:
 Sigue estos pasos para construir y ejecutar los contenedores:
 
 1. Construir la imagen
-`docker compose build`
+```bash
+docker compose build
+```
 
 2. Levantar los contenedores en segundo plano
-`docker compose up --detach`
+```bash
+docker compose up --detach
+```
 
 3. Para detener y eliminar los contenedores
-`docker compose down`
+```bash
+docker compose down
+```
 
-**Nota:** Si quieres volver a levantar los contenedores después de haberlos modificados, recomiendo usar --no-cache durante la creación de la imagen en el paso 1 y seguir con el paso 2.
+**Nota:** Si quieres volver a levantar los contenedores después de haberlos modificados, recomiendo usar `--no-cache durante` la creación de la imagen en el paso 1 y seguir con el paso 2.
 
 ## 3. Acceso a la aplicación
 
@@ -44,33 +50,33 @@ Dentro de la aplicación:
 1. Haz clic en **"Crear Cuenta"** para registrarte.
 2. Una vez creada la cuenta, podrás iniciar sesión y realizar depósitos y retiros desde tu cuenta.
 
-### Pasos para descargar las imágenes de Docker Hub
+# Pasos para descargar las imágenes de Docker Hub
 
-1. **Descargar la imagen del backend:**
+1. Descargar la imagen del backend:
 
     ```bash
     docker pull emmanesp/fintech-backend:latest
     ```
 
-2. **Descargar la imagen del frontend:**
+2. Descargar la imagen del frontend:
 
     ```bash
     docker pull emmanesp/fintech-frontend:latest
     ```
 
-3. **Crear una Docker network:**
+3. Crear una Docker network:
 
     ```bash
     docker network create fintech-network
     ```
 
-4. **Agregar MongoDB a la red para que el backend pueda conectarse:**
+4. Asegúrate de estar en el directorio root del repositorio, ya que utilizaremos la configuración de MongoDB desde aquí. Ejecuta el siguiente comando para agregar MongoDB a la red y permitir que el backend pueda conectarse a la base de datos:
 
     ```bash
     docker run -d --network fintech-network --name fintech_mongodb mongo:6.0
     ```
 
-5. **Ejecutar la imagen del backend con el siguiente comando:**
+5. Ejecutar la imagen del backend con el siguiente comando:
 
     ```bash
     docker run -d \
@@ -87,7 +93,7 @@ Dentro de la aplicación:
       emmanesp/fintech-backend:latest
     ```
 
-6. **Ejecutar la imagen del frontend con el siguiente comando:**
+6. Ejecutar la imagen del frontend con el siguiente comando:
 
     ```bash
     docker run -d -p 4200:80 --name fintech-frontend emmanesp/fintech-frontend:latest
