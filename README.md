@@ -1,3 +1,12 @@
+# Arquitectura del systema - Techreo Fullstack
+
+![image](https://github.com/user-attachments/assets/f3b23bd0-7fdc-4784-b1f5-34f23d954421)
+
+![image](https://github.com/user-attachments/assets/d07fbae9-eeb3-45b0-b1b2-38eb81c68865)
+
+![image](https://github.com/user-attachments/assets/ee3ae178-8cc4-4754-8e01-957c9b109643)
+
+
 # Guía de instalación - Techreo Fullstack
 
 ## 1. Clonar el repositorio
@@ -32,7 +41,7 @@ docker compose build
 docker compose up --detach
 ```
 
-3. Para detener y eliminar los contenedores
+3. Opcional: Para cuando necesites detener y eliminar los contenedores
 ```bash
 docker compose down
 ```
